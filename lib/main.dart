@@ -1,6 +1,4 @@
-import 'package:childsafeapp/screens/ble_test_page.dart';
 import 'package:flutter/material.dart';
-import 'screens/home_page.dart';
 import 'package:childsafeapp/navigation_scaffold.dart';
 
 void main() {

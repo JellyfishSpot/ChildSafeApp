@@ -3,7 +3,7 @@ import 'package:childsafeapp/screens/home_page.dart';
 import 'package:flutter/material.dart';
 
 class NavigationScaffold extends StatefulWidget{
-  NavigationScaffold({super.key});
+  const NavigationScaffold({super.key});
 
   @override
   State<StatefulWidget> createState() => NavigationState();
@@ -45,9 +45,9 @@ class NavigationState extends State<NavigationScaffold> {
       body:
           <Widget>[
             /// Home page
-            MyHomePage(title: "Test"),
-            BluetoothTestPage(title: "Bluetooth"),
-            MyHomePage(title: "Placeholder"),
+            MyHomePage(title: 'Test'),
+            BluetoothTestPage(title: 'Bluetooth'),
+            MyHomePage(title: 'Placeholder'),
           ][currentPageIndex],
     );
   }
