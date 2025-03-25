@@ -1,5 +1,4 @@
-import 'dart:math';
-
+import 'package:childsafeapp/services/ble_service.dart';
 import 'package:flutter/material.dart';
 
 class BluetoothTestPage extends StatefulWidget {
@@ -14,6 +13,7 @@ class BluetoothTestPage extends StatefulWidget {
 class _BluetoothState extends State<BluetoothTestPage> {
     
   final myController = TextEditingController();
+  final bluetoothService = BleService();
 
   @override
   void dispose() {
@@ -66,9 +66,9 @@ class _BluetoothState extends State<BluetoothTestPage> {
             ),
             Row(
               children: [
-                ElevatedButton(onPressed: () {debugPrint(myController.text); }, child: const Text('Send')),
+                ElevatedButton(onPressed: bluetoothService.connectToSensorStream, child: const Text('Connect')),
                 SizedBox(width: 10),
-                ElevatedButton(onPressed: () {debugPrint('right'); }, child: const Text('Receive'))
+                ElevatedButton(onPressed: () {debugPrint("hi"); }, child: const Text('Print'))
               ],
             )
           ]
