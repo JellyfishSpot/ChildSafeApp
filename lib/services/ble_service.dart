@@ -13,6 +13,10 @@ class BleService {
   late BluetoothCharacteristic sensorCharacteristic;
   late Stream<List<int>> sensorDataStream;
 
+  // Variables for testing
+  int count = 0;
+  int alarm = -1;
+
   /* Connection Methods */
 
   // Using service uuid, should return only our sensor device
@@ -37,8 +41,10 @@ class BleService {
   // Subscribes to stream and setup event error handling
   void setUpListener() {
     var sensorDataStream = sensorCharacteristic.onValueReceived.listen( (signal) {
-      // TODO: Determine signal input size and meaning
-      int childStatus = signal[0]; 
+      // TODO: Determine signal input size and values
+      int childStatus = signal[0];
+      count++;
+      alarm = childStatus; // For testing only
 
       if (childStatus == 1) sendPushNotification();
 
@@ -48,6 +54,10 @@ class BleService {
 
   void sendPushNotification() async {
     await showNotification("Child left in car");
+  }
+
+  List<int> testOutput() {
+    return [count, alarm];
   }
 
 }
