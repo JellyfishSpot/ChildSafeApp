@@ -1,5 +1,7 @@
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
+import 'package:childsafeapp/services/notification_service.dart';
+
 class BleService {
   FlutterBluePlus flutterBlue = FlutterBluePlus();
 
@@ -44,8 +46,8 @@ class BleService {
     
   }
 
-  void sendPushNotification() {
-    
+  void sendPushNotification() async {
+    await showNotification("Child left in car");
   }
 
 }
