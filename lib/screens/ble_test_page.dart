@@ -68,7 +68,10 @@ class _BluetoothState extends State<BluetoothTestPage> {
               children: [
                 ElevatedButton(onPressed: bluetoothService.connectToSensorStream, child: const Text('Connect')),
                 SizedBox(width: 10),
-                ElevatedButton(onPressed: () {debugPrint("hi"); }, child: const Text('Print'))
+                ElevatedButton(onPressed: () {
+                    List<int> data = bluetoothService.testOutput();
+                    debugPrint("Count: $data[0] => Value: $data[1]");
+                  }, child: const Text('Print'))
               ],
             )
           ]
