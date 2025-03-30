@@ -6,7 +6,7 @@ Future<void> initNotifications() async {
   AndroidInitializationSettings androidInit = AndroidInitializationSettings('app_icon');
   DarwinInitializationSettings iosInit = DarwinInitializationSettings();
   final InitializationSettings setInit = InitializationSettings(android: androidInit, iOS: iosInit);
-  await flutterLocalNotificationsPlugin.initialize(setInit); // no onDidReceiveNotifications. Might be necessary?
+  //await flutterLocalNotificationsPlugin.initialize(setInit); // no onDidReceiveNotifications. Might be necessary?
 }
 
 Future<void> showNotification(String message) async {
