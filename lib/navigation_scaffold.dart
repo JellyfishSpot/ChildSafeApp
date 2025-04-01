@@ -1,6 +1,8 @@
 import 'package:childsafeapp/screens/ble_test_page.dart';
 import 'package:childsafeapp/screens/home_page.dart';
 import 'package:flutter/material.dart';
+import 'package:childsafeapp/screens/notification_page.dart'; // Add this import
+
 
 class NavigationScaffold extends StatefulWidget{
   const NavigationScaffold({super.key});
@@ -47,7 +49,7 @@ class NavigationState extends State<NavigationScaffold> {
             /// Home page
             MyHomePage(title: 'Test'),
             BluetoothTestPage(title: 'Bluetooth'),
-            MyHomePage(title: 'Placeholder'),
+            const NotificationScreen(), // <-- Replace the 'Placeholder'
           ][currentPageIndex],
     );
   }

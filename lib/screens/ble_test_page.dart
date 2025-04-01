@@ -1,5 +1,7 @@
 import 'package:childsafeapp/services/ble_service.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';  // Import for Timer
+
 
 class BluetoothTestPage extends StatefulWidget {
   const BluetoothTestPage({super.key, required this.title});
@@ -14,13 +16,35 @@ class _BluetoothState extends State<BluetoothTestPage> {
     
   final myController = TextEditingController();
   final bluetoothService = BleService();
+   bool isActive = false;
+   Timer? _timer;
 
   @override
   void dispose() {
     // Clean up the controller when the widget is disposed.
     myController.dispose();
+    _timer?.cancel();
     super.dispose();
   }
+
+
+// Start/stop sending notifications every 10 seconds
+  void toggleNotifications() {
+    setState(() {
+      isActive = !isActive;
+    });
+
+    if (isActive) {
+      // Start sending notifications every 10 seconds
+      _timer = Timer.periodic(Duration(seconds: 10), (timer) {
+        bluetoothService.sendPushNotification();
+      });
+    } else {
+      // Stop the timer when the button is pressed again
+      _timer?.cancel();
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -71,9 +95,14 @@ class _BluetoothState extends State<BluetoothTestPage> {
                 ElevatedButton(onPressed: () {
                     List<int> data = bluetoothService.testOutput();
                     debugPrint("Count: $data[0] => Value: $data[1]");
-                  }, child: const Text('Print'))
-              ],
-            )
+                  }, child: const Text('Print')),
+                ElevatedButton(onPressed: toggleNotifications,  // Toggle the notifications
+                  child: Text(isActive ? 'Stop Notifications' : 'Notify'),),
+                SizedBox(width: 10),
+               
+  ],
+)
+      
           ]
         )
       ),
