@@ -9,7 +9,13 @@ Future<void> initNotifications() async {
   AndroidInitializationSettings androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
   DarwinInitializationSettings iosInit = DarwinInitializationSettings();
   final InitializationSettings setInit = InitializationSettings(android: androidInit, iOS: iosInit);
-  await flutterLocalNotificationsPlugin.initialize(setInit); // no onDidReceiveNotifications. Might be necessary?
+  bool? initialized = await flutterLocalNotificationsPlugin.initialize(setInit); // no onDidReceiveNotifications. Might be necessary?
+
+  if (initialized == true) {
+    print("Notifications initialized successfully.");
+  } else {
+    print("Failed to initialize notifications.");
+  }
 }
 
 Future<void> requestNotificationPermissions() async {
@@ -42,23 +48,20 @@ Future<void> showNotification(String message) async {
 
   const NotificationDetails details = NotificationDetails(android: androidDetails, iOS: iosDetails);
 
-   // Save to local store
+  // Save to local store
   NotificationStore.addNotification(AppNotification(
     title: "ChildSafe",
     body: message,
     timestamp: DateTime.now(),
   ));
+
   await flutterLocalNotificationsPlugin.show(
     0,
     "ChildSafe",
-    message,
+    "Child Left in Car",
     details,
   );
 
-  // await flutterLocalNotificationsPlugin.show(
-  //   0, // Notification ID
-  //   "ChildSafe", // Title
-  //   "Alert", // Body
-  //  details,
-  // );
+  print("Notification sent: $message");
+
 }
