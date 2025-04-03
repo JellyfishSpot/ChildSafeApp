@@ -1,0 +1,2 @@
+C:/Users/Butte/programming/ChildSafeApp/android/app/.cxx/Debug/3h26k6j3/x86_64/CMakeFiles/edit_cache.dir
+C:/Users/Butte/programming/ChildSafeApp/android/app/.cxx/Debug/3h26k6j3/x86_64/CMakeFiles/rebuild_cache.dir
