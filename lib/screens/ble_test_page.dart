@@ -72,7 +72,7 @@ class _BluetoothState extends State<BluetoothTestPage> {
                     readOnly: true,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
-                      hintText: 'Read Value',
+                      hintText: 'Retry Discovery',
                     ),
                   )
                 ),
@@ -93,9 +93,8 @@ class _BluetoothState extends State<BluetoothTestPage> {
                 ElevatedButton(onPressed: bluetoothService.connectToSensorStream, child: const Text('Connect')),
                 SizedBox(width: 10),
                 ElevatedButton(onPressed: () {
-                    List<int> data = bluetoothService.testOutput();
-                    debugPrint("Count: $data[0] => Value: $data[1]");
-                  }, child: const Text('Print')),
+                    bluetoothService.setUpListener();
+                  }, child: const Text('Retry Services')),
                 ElevatedButton(onPressed: toggleNotifications,  // Toggle the notifications
                   child: Text(isActive ? 'Stop Notifications' : 'Notify'),),
                 SizedBox(width: 10),

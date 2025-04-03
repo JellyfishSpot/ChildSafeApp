@@ -117,11 +117,6 @@ class BleService {
   void setUpListener() async {
     int retries = 3;
     // Note: You must call discoverServices after every re-connection!
-    sensor.connectionState.listen((state) {
-      if (state == BluetoothConnectionState.disconnected) {
-        print("Device disconnected during service discovery.");
-      }
-    });
     List<BluetoothService> services;
     services = await sensor.discoverServices();
 
@@ -137,6 +132,7 @@ class BleService {
     }
     if (services.isEmpty) {
       print("No services discovered. Ensure the device is ready.");
+      return;
     } else {
       services.forEach((service) {
         if (service.uuid == targetService) {
