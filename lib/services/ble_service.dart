@@ -79,7 +79,7 @@ class BleService {
       print("Error during connection: $e");
     }
 
-    await Future.delayed(Duration(seconds: 30)); // wait for 60 seconds before discovering services
+    await Future.delayed(Duration(seconds: 30)); // wait for 30 seconds before discovering services
 
     setUpListener();
   }
@@ -133,10 +133,10 @@ class BleService {
       // Setup sensor data listener
       var sensorDataStream = sensorCharacteristic.onValueReceived.listen((signal) async {
         int childStatus = signal[0];
-        alarm = childStatus; // For testing only
+        alarm = childStatus;
 
         if (childStatus == 1) {
-          // If child is still buckled for 30s after car is parked, send alarm
+          // If child is still buckled for 60s after car is parked, send alarm
           await Future.delayed(Duration(seconds: 60));
           if (childStatus == 1) {
             sendPushNotification();
