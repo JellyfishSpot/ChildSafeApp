@@ -14,8 +14,6 @@ class BleService {
   late BluetoothCharacteristic sensorCharacteristic;
   late Stream<List<int>> sensorDataStream;
 
-  // Variables for testing
-  int count = 0;
   int alarm = -1;
 
   /* Connection Methods */
@@ -69,19 +67,25 @@ class BleService {
 
     // wait for scanning to stop
     await FlutterBluePlus.isScanning.where((val) => val == false).first;
-
+    
     try {
       // Connect to the device with a timeout
-      await sensor.connect(timeout: Duration(seconds: 60), autoConnect: false);
+      await sensor.connect(timeout: Duration(seconds: 120), autoConnect: false);
 
       // Skip MTU request as the device defaults to 23 bytes
       print("Connected successfully with default MTU size (23 bytes).");
     } catch (e) {
       print("Error during connection: $e");
+      try {
+        int mtu = await sensor.requestMtu(242);
+        print("no hope: $mtu");
+      } catch (err) {
+        print("Error during mtu request: $err");
+      }
       // return; // Assuming that the failed case will not impact the running
     }
 
-    await Future.delayed(Duration(seconds: 30)); // wait for 70 seconds before discovering services
+    await Future.delayed(Duration(seconds: 30)); // wait for 60 seconds before discovering services
 
     setUpListener();
   }
@@ -91,7 +95,7 @@ class BleService {
     int retries = 3;
     // Note: You must call discoverServices after every re-connection!
     List<BluetoothService> services;
-    services = await sensor.discoverServices();
+    services = await sensor.discoverServices(timeout: 30);
 
     for (int i = 1; i <= retries; i++) {
       if (services.isNotEmpty) {
@@ -103,6 +107,7 @@ class BleService {
         services = await sensor.discoverServices();
       }
     }
+    
     if (services.isEmpty) {
       print("No services discovered. Ensure the device is ready.");
       return;
@@ -121,33 +126,33 @@ class BleService {
 
       // Setup disconnect listener
       var connectSubscription = sensor.connectionState.listen((BluetoothConnectionState state) async {
-          if (state == BluetoothConnectionState.disconnected) {
-            // If app disconnect while last value read was child in car, notify user
-            if(alarm == 1) {
-              sendPushNotification();
-            }
-            print("${sensor.disconnectReason?.code} ${sensor.disconnectReason?.description}");
+        if (state == BluetoothConnectionState.disconnected) {
+          // If app disconnect while last value read was child in car, notify user
+          if(alarm == 1) {
+            print("disconnection method");
+            sendPushNotification();
           }
+          print("${sensor.disconnectReason?.code} ${sensor.disconnectReason?.description}");
+        }
       });
 
-      // cleanup: cancel subscription when disconnected
+      // Setup sensor data listener
+      var sensorDataStream = sensorCharacteristic.onValueReceived.listen((signal) async {
+        int childStatus = signal[0];
+        alarm = childStatus; // For testing only
+
+        if (childStatus == 1) {
+          // If child is still buckled for 30s after car is parked, send alarm
+          await Future.delayed(Duration(seconds: 60));
+          if (childStatus == 1) {
+            sendPushNotification();
+          }
+        }
+      });
+
       sensor.cancelWhenDisconnected(connectSubscription, delayed:true);
+      sensor.cancelWhenDisconnected(sensorDataStream);
     }
-
-    // Setup sensor data listener
-    var sensorDataStream = sensorCharacteristic.onValueReceived.listen((signal) async {
-      int childStatus = signal[0];
-      count++;
-      alarm = childStatus; // For testing only
-
-      if (childStatus == 1) {
-        // If child is still buckled for 30s after car is parked, send alarm
-        await Future.delayed(Duration(seconds: 30));
-        sendPushNotification();
-      }
-    });
-
-    sensor.cancelWhenDisconnected(sensorDataStream);
   }
 
   void sendPushNotification() async {
