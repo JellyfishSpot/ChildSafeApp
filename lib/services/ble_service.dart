@@ -25,6 +25,8 @@ class BleService {
       Permission.bluetooth,
       Permission.bluetoothConnect,
       Permission.bluetoothScan,
+      Permission.notification,
+      Permission.ignoreBatteryOptimizations,
       ];
     await permissions.request();
   }
@@ -40,7 +42,6 @@ class BleService {
   }
 
   void connectToSensorStream() async {
-    // TODO: Implement retries and error handling
     checkAndRequestPermissions();
 
     var subscription = FlutterBluePlus.scanResults.listen((results) {
@@ -66,7 +67,7 @@ class BleService {
       withServices: [targetService]);
 
     // wait for scanning to stop
-    await FlutterBluePlus.isScanning.where((val) => val == false).first;
+    await FlutterBluePlus.isScanning.where((val) => val ==  false).first;
     
     try {
       // Connect to the device with a timeout
@@ -76,13 +77,6 @@ class BleService {
       print("Connected successfully with default MTU size (23 bytes).");
     } catch (e) {
       print("Error during connection: $e");
-      try {
-        int mtu = await sensor.requestMtu(242);
-        print("no hope: $mtu");
-      } catch (err) {
-        print("Error during mtu request: $err");
-      }
-      // return; // Assuming that the failed case will not impact the running
     }
 
     await Future.delayed(Duration(seconds: 30)); // wait for 60 seconds before discovering services
