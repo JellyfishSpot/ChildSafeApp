@@ -37,7 +37,7 @@ class _BluetoothState extends State<BluetoothTestPage> {
     if (isActive) {
       // Start sending notifications every 10 seconds
       _timer = Timer.periodic(Duration(seconds: 10), (timer) {
-        bluetoothService.sendPushNotification();
+        print("hi");
       });
     } else {
       // Stop the timer when the button is pressed again
@@ -93,7 +93,7 @@ class _BluetoothState extends State<BluetoothTestPage> {
                 ElevatedButton(onPressed: bluetoothService.connectToSensorStream, child: const Text('Connect')),
                 SizedBox(width: 10),
                 ElevatedButton(onPressed: () {
-                    bluetoothService.setUpListener();
+                    bluetoothService.startForegroundService();
                   }, child: const Text('Retry Services')),
                 ElevatedButton(onPressed: toggleNotifications,  // Toggle the notifications
                   child: Text(isActive ? 'Stop Notifications' : 'Notify'),),

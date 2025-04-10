@@ -1,7 +1,7 @@
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 import 'package:permission_handler/permission_handler.dart';
-import 'package:childsafeapp/services/notification_service.dart';
+import 'package:childsafeapp/services/foreground_service.dart';
 
 class BleService {
   FlutterBluePlus flutterBlue = FlutterBluePlus();
@@ -13,8 +13,6 @@ class BleService {
   late BluetoothDevice sensor;
   late BluetoothCharacteristic sensorCharacteristic;
   late Stream<List<int>> sensorDataStream;
-
-  int alarm = -1;
 
   /* Connection Methods */
 
@@ -117,40 +115,13 @@ class BleService {
           });
         }
       });
-
-      // Setup disconnect listener
-      var connectSubscription = sensor.connectionState.listen((BluetoothConnectionState state) async {
-        if (state == BluetoothConnectionState.disconnected) {
-          // If app disconnect while last value read was child in car, notify user
-          if(alarm == 1) {
-            print("disconnection method");
-            sendPushNotification();
-          }
-          print("${sensor.disconnectReason?.code} ${sensor.disconnectReason?.description}");
-        }
-      });
-
-      // Setup sensor data listener
-      var sensorDataStream = sensorCharacteristic.onValueReceived.listen((signal) async {
-        int childStatus = signal[0];
-        alarm = childStatus;
-
-        if (childStatus == 1) {
-          // If child is still buckled for 60s after car is parked, send alarm
-          print("First signal");
-          await Future.delayed(Duration(seconds: 15));
-          if (childStatus == 1) {
-            sendPushNotification();
-          }
-        }
-      });
-
-      sensor.cancelWhenDisconnected(connectSubscription, delayed:true);
-      sensor.cancelWhenDisconnected(sensorDataStream);
     }
+
+    startForegroundService();
   }
 
-  void sendPushNotification() async {
-    await showNotification("Child left in car");
+  void startForegroundService() {
+    ForegroundTaskService.init();
+    startService(sensor, sensorCharacteristic);
   }
 }
