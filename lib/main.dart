@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
+import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 
 import 'package:childsafeapp/navigation_scaffold.dart';
+import 'package:childsafeapp/services/foreground_service.dart';
 import 'package:childsafeapp/services/notification_service.dart';
 import 'package:childsafeapp/services/amber_alert_notification_service.dart';
+
 
 
 
@@ -15,7 +17,7 @@ Future<void> main() async {
   await initNotifications();
   await initAmberAlertNotifications();
 
-  FlutterForegroundTask.initCommunicationPort();
+  ForegroundTaskService.init();
   runApp(const MyApp());
 }
 

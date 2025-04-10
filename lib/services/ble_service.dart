@@ -33,7 +33,7 @@ class BleService {
 
   void checkAndRequestPermissions() async {
     if (await Permission.bluetoothScan.isDenied ||
-        await Permission.bluetoothConnect.isDenied) {
+        await Permission.bluetoothConnect.isDenied || await Permission.notification.isDenied) {
       print("permissions denied, requesting permissions");
             requestPermissions();
     } else {
@@ -79,7 +79,7 @@ class BleService {
       print("Error during connection: $e");
     }
 
-    await Future.delayed(Duration(seconds: 30)); // wait for 30 seconds before discovering services
+    await Future.delayed(Duration(seconds: 10)); // wait for 30 seconds before discovering services
 
     setUpListener();
   }
@@ -137,7 +137,8 @@ class BleService {
 
         if (childStatus == 1) {
           // If child is still buckled for 60s after car is parked, send alarm
-          await Future.delayed(Duration(seconds: 60));
+          print("First signal");
+          await Future.delayed(Duration(seconds: 15));
           if (childStatus == 1) {
             sendPushNotification();
           }
